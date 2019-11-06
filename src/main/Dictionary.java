@@ -50,20 +50,45 @@ public class Dictionary {
 
     public ArrayList sameTrigramWords(String word){
         ArrayList<String> trigrams = getTrigrams(word);
-        ArrayList<String> commonWords = new ArrayList<String>();
+        ArrayList<String> commonWords = new ArrayList<>();
+        ArrayList<WordOccurrences> wordOccurrences = new ArrayList<>();
 
         for(String string : trigrams){
-            commonWords.addAll(dico.get(string));
+            if(!dico.containsKey(string))
+                continue;
+            for(String dicoWord : dico.get(string)){
+                if(!commonWords.contains(dicoWord)){
+                    commonWords.add(dicoWord);
+                    wordOccurrences.add(new WordOccurrences(dicoWord));
+                }
+                else{
+                    for(WordOccurrences wordOccurrences1 : wordOccurrences) {
+                        if(wordOccurrences1.word.equals(dicoWord)){
+                            wordOccurrences1.incrementOccurrences();
+                        }
+
+                    }
+                }
+            }
         }
-        return commonWords;
+        return wordOccurrences;
     }
 
-    public void wordsFilter(String word, ArrayList<String> commonWords) {
+    public ArrayList worldFilter(ArrayList<WordOccurrences> wordOccurrences){
+        ArrayList<WordOccurrences> best100 = new ArrayList();
+        best100.addAll(wordOccurrences.subList(0,100));
 
-        ArrayList<String> wordTrigrams = getTrigrams(word);
-
-        for(String string : commonWords) {
-            
+        for(WordOccurrences item : wordOccurrences.subList(101, wordOccurrences.size())){
+            for(WordOccurrences best100Word : best100){
+                if(!(best100Word.occurrences < item.occurrences)) {
+                    continue;
+                }
+                best100.set(best100.indexOf(best100Word), item);
+                break;
+            }
         }
+
+        return best100;
+
     }
 }
