@@ -58,7 +58,7 @@ public class Dictionary {
 
     // This function creates a list of words, as well as their number of occurrences,
     // that have at least one trigram in common with the word given as a parameter
-    private ArrayList sameTrigramWords(String word){
+    private ArrayList wordsWithSameTrigrams(String word){
         ArrayList<String> wordsWithCommonTrigrams = new ArrayList<>();
         ArrayList<WordWithValue> wordOccurrences = new ArrayList<>();
         // Gets the trigrams of a word
@@ -117,7 +117,7 @@ public class Dictionary {
 
     // This function takes a word and returns the 100 most similar words
     public ArrayList similarWords(String word) {
-        ArrayList<WordWithValue> similarWords = mostSimilarWords(sameTrigramWords(word));
+        ArrayList<WordWithValue> similarWords = mostSimilarWords(wordsWithSameTrigrams(word));
         return similarWords;
     }
 }
