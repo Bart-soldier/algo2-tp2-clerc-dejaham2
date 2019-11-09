@@ -94,21 +94,25 @@ public class Dictionary {
     private ArrayList mostSimilarWords(ArrayList<WordWithValue> wordOccurrences){
         ArrayList<WordWithValue> mostSimilarWords = new ArrayList();
         // Adds the first 100 words of the list wordOccurrences to the list mostSimilarWords
-        mostSimilarWords.addAll(wordOccurrences.subList(0,100));
+        if(wordOccurrences.size() > 100) {
+            mostSimilarWords.addAll(wordOccurrences.subList(0, 100));
 
-        // For the other words of the list wordOccurrences
-        for(WordWithValue word : wordOccurrences.subList(101, wordOccurrences.size())){
-            // Replaces it with a word in mostSimilarWords if its amount of occurrences (i.e. value) is bigger
-            for(WordWithValue similarWord : mostSimilarWords){
-                if(!(similarWord.value < word.value)) {
-                    continue;
+            // For the other words of the list wordOccurrences
+            for (WordWithValue word : wordOccurrences.subList(101, wordOccurrences.size())) {
+                // Replaces it with a word in mostSimilarWords if its amount of occurrences (i.e. value) is bigger
+                for (WordWithValue similarWord : mostSimilarWords) {
+                    if (!(similarWord.value < word.value)) {
+                        continue;
+                    }
+                    mostSimilarWords.set(mostSimilarWords.indexOf(similarWord), word);
+                    break;
                 }
-                mostSimilarWords.set(mostSimilarWords.indexOf(similarWord), word);
-                break;
             }
+
+            return mostSimilarWords;
         }
 
-        return mostSimilarWords;
+        else return wordOccurrences;
     }
 
     // This function takes a word and returns the 100 most similar words
