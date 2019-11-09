@@ -53,7 +53,9 @@ public class Dictionary {
         if(word.length() == 1) trigram += ">";
 
         String wordWithSymbols = "<" + word + ">";
-        return dictionary.get(trigram).contains(wordWithSymbols);
+
+        if(dictionary.containsKey(trigram)) return dictionary.get(trigram).contains(wordWithSymbols);
+        else return false;
     }
 
     // This function creates a list of words, as well as their number of occurrences,
