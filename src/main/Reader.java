@@ -16,17 +16,14 @@ public class Reader {
 
 
     public String readNextWord() {
-        String string = "<";
-        string = string.concat(scanner.next());
-        string = string.concat(">");
-        return string;
+        return scanner.nextLine();
     }
 
-    public void closeScanner(){
+    public void closeReader(){
         scanner.close();
     }
 
     public boolean hasNext(){
-        return scanner.hasNext();
+        return scanner.hasNextLine();
     }
 }

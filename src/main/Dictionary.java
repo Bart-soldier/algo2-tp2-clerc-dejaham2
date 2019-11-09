@@ -5,68 +5,83 @@ import java.util.HashMap;
 
 public class Dictionary {
 
-    private HashMap<String, ArrayList<String>> dico;
+    // The dictionary is a hash map that hashes words to their trigrams, i.e. the keys
+    private HashMap<String, ArrayList<String>> dictionary;
 
+    // This function creates the dictionary using a hash map, as detailed above
     public Dictionary(){
-        dico = new HashMap<>(17000);
+        dictionary = new HashMap<>(17000);
         Reader reader = new Reader("dico.txt");
         String word;
+
         while (reader.hasNext()){
             word = reader.readNextWord();
+            word = "<" + word + ">";
             addTrigramsToHash(getTrigrams(word), word);
         }
+
+        reader.closeReader();
     }
 
-
-    private ArrayList<String> getTrigrams(String string) {
+    // This function gets the trigrams for a given word
+    private ArrayList<String> getTrigrams(String word) {
         ArrayList<String> trigrams = new ArrayList();
-        for(int i = 0; i < string.length() - 2; i++){
-            trigrams.add((String) string.subSequence(i, i+3));
+        for(int i = 0; i < word.length() - 2; i++){
+            trigrams.add((String) word.subSequence(i, i+3));
         }
         return trigrams;
     }
 
-    public void addTrigramsToHash(ArrayList<String> trigrams, String word){
+    // This function, for each trigram of a word, after checking if the trigram is already a key, hashes the word to its trigram
+    private void addTrigramsToHash(ArrayList<String> trigrams, String word){
         for(String string : trigrams){
-            dico.computeIfAbsent(string, k -> new ArrayList<String>());
-            dico.get(string).add(word);
+            dictionary.computeIfAbsent(string, k -> new ArrayList<String>());
+            dictionary.get(string).add(word);
         }
     }
 
+    // This function checks if a word is already in the dictionary
     public boolean isWord(String word) {
         String trigram = "<";
-        int i = 0;
+        int index = 0;
 
         do {
-            trigram = trigram.concat((String) word.subSequence(i, i+1));
-            i++;
-        } while ((i < word.length()) && (i < 2));
+            trigram = trigram.concat((String) word.subSequence(index, index+1));
+            index++;
+        } while ((index < word.length()) && (index < 2));
 
         if(word.length() == 1) trigram += ">";
 
         String wordWithSymbols = "<" + word + ">";
-        return dico.get(trigram).contains(wordWithSymbols);
+        return dictionary.get(trigram).contains(wordWithSymbols);
     }
 
-    public ArrayList sameTrigramWords(String word){
+    // This function creates a list of words, as well as their number of occurrences,
+    // that have at least one trigram in common with the word given as a parameter
+    private ArrayList sameTrigramWords(String word){
+        ArrayList<String> wordsWithCommonTrigrams = new ArrayList<>();
+        ArrayList<WordWithValue> wordOccurrences = new ArrayList<>();
+        // Gets the trigrams of a word
         ArrayList<String> trigrams = getTrigrams(word);
-        ArrayList<String> commonWords = new ArrayList<>();
-        ArrayList<WordOccurrences> wordOccurrences = new ArrayList<>();
 
-        for(String string : trigrams){
-            if(!dico.containsKey(string))
+        // For every trigram of a word
+        for(String trigram : trigrams){
+            // If the trigram doesn't exist in the dictionary, we skip it
+            if(!dictionary.containsKey(trigram))
                 continue;
-            for(String dicoWord : dico.get(string)){
-                if(!commonWords.contains(dicoWord)){
-                    commonWords.add(dicoWord);
-                    wordOccurrences.add(new WordOccurrences(dicoWord));
+            // Otherwise, we add every word hashed to that trigram to the list wordsWithCommonTrigrams
+            for(String wordWithCommonTrigram : dictionary.get(trigram)){
+                // If the list doesn' contain this word, we add it with a value of 1 (for occurrences)
+                if(!wordsWithCommonTrigrams.contains(wordWithCommonTrigram)){
+                    wordsWithCommonTrigrams.add(wordWithCommonTrigram);
+                    wordOccurrences.add(new WordWithValue(wordWithCommonTrigram, 1));
                 }
+                // If the list contains this word, we increment its value (of occurrences)
                 else{
-                    for(WordOccurrences wordOccurrences1 : wordOccurrences) {
-                        if(wordOccurrences1.word.equals(dicoWord)){
-                            wordOccurrences1.incrementOccurrences();
+                    for(WordWithValue wordWithValue : wordOccurrences) {
+                        if(wordWithValue.word.equals(wordWithCommonTrigram)){
+                            wordWithValue.incrementValue();
                         }
-
                     }
                 }
             }
@@ -74,21 +89,33 @@ public class Dictionary {
         return wordOccurrences;
     }
 
-    public ArrayList worldFilter(ArrayList<WordOccurrences> wordOccurrences){
-        ArrayList<WordOccurrences> best100 = new ArrayList();
-        best100.addAll(wordOccurrences.subList(0,100));
+    // This function takes a list of words, as well as their number of occurrences,
+    // and returns the 100 words that appear the most often (i.e. have the highest amount of occurrences)
+    private ArrayList mostSimilarWords(ArrayList<WordWithValue> wordOccurrences){
+        ArrayList<WordWithValue> mostSimilarWords = new ArrayList();
+        // Adds the first 100 words of the list wordOccurrences to the list mostSimilarWords
+        mostSimilarWords.addAll(wordOccurrences.subList(0,100));
 
-        for(WordOccurrences item : wordOccurrences.subList(101, wordOccurrences.size())){
-            for(WordOccurrences best100Word : best100){
-                if(!(best100Word.occurrences < item.occurrences)) {
+        // For the other words of the list wordOccurrences
+        for(WordWithValue word : wordOccurrences.subList(101, wordOccurrences.size())){
+            // Replaces it with a word in mostSimilarWords if its amount of occurrences (i.e. value) is bigger
+            for(WordWithValue similarWord : mostSimilarWords){
+                if(!(similarWord.value < word.value)) {
                     continue;
                 }
-                best100.set(best100.indexOf(best100Word), item);
+                mostSimilarWords.set(mostSimilarWords.indexOf(similarWord), word);
                 break;
             }
         }
 
-        return best100;
+        return mostSimilarWords;
+    }
 
+    // This function takes a word and returns the 100 most similar words
+    public ArrayList similarWords(String word) {
+        ArrayList<WordWithValue> similarWords = new ArrayList<>();
+        similarWords = sameTrigramWords(word);
+        similarWords = mostSimilarWords(similarWords);
+        return similarWords;
     }
 }
