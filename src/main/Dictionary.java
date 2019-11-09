@@ -113,9 +113,7 @@ public class Dictionary {
 
     // This function takes a word and returns the 100 most similar words
     public ArrayList similarWords(String word) {
-        ArrayList<WordWithValue> similarWords = new ArrayList<>();
-        similarWords = sameTrigramWords(word);
-        similarWords = mostSimilarWords(similarWords);
+        ArrayList<WordWithValue> similarWords = mostSimilarWords(sameTrigramWords(word));
         return similarWords;
     }
 }
