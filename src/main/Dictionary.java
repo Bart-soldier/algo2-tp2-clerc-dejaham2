@@ -58,9 +58,46 @@ public class Dictionary {
         else return false;
     }
 
-    // This function creates a list of words, as well as their number of occurrences,
+    // This function creates a list of words, as well as the number of occurrences of their trigrams,
     // that have at least one trigram in common with the word given as a parameter
     private ArrayList wordsWithSameTrigrams(String word){
+        /*
+        ArrayList<WordWithValue> wordOccurrences = new ArrayList<>();
+        boolean test;
+
+        // Gets the trigrams of a word
+        ArrayList<String> trigrams = getTrigrams(word);
+
+        // For every trigram of the word
+        for(String trigram : trigrams){
+            // If the trigram doesn't exist in the dictionary, we skip it
+            if(!dictionary.containsKey(trigram))
+                continue;
+            // Otherwise, we go through every word hashed to that trigram
+            for(String wordWithCommonTrigram : dictionary.get(trigram)){
+                test = true;
+
+                // We go through every word already added to wordOccurences
+                for(WordWithValue wordWithValue : wordOccurrences) {
+                    // Check if you find the word in the list
+                    if(!(wordWithValue.word.equals(wordWithCommonTrigram))) {
+                        continue;
+                    }
+                    // If you do, you increment it and break out of the loop as the word can only exist one time in the list
+                    wordWithValue.incrementValue();
+                    test = false;
+                    break;
+                }
+                // If the word hasn't been found in wordOccurences
+                if(test) {
+                    wordOccurrences.add(new WordWithValue(wordWithCommonTrigram, 1));
+                }
+            }
+        }
+
+        return wordOccurrences;
+        */
+
         ArrayList<String> wordsWithCommonTrigrams = new ArrayList<>();
         ArrayList<WordWithValue> wordOccurrences = new ArrayList<>();
         // Gets the trigrams of a word
@@ -119,7 +156,6 @@ public class Dictionary {
 
     // This function takes a word and returns the 100 most similar words
     public ArrayList similarWords(String word) {
-        ArrayList<WordWithValue> similarWords = mostSimilarWords(wordsWithSameTrigrams(word));
-        return similarWords;
+        return mostSimilarWords(wordsWithSameTrigrams(word));
     }
 }
