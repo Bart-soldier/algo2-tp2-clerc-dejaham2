@@ -29,28 +29,25 @@ public class Main {
         reader.closeReader();
     }
 
-    public static void test(Dictionary dictionary, String correctWord, String wrongWord) {
-        // Test 1 : word in dictionary
-        System.out.println(correctWord + " is in the dictionary ? " + dictionary.isWord(correctWord) + "\n");
+    public static void test(Dictionary dictionary, String word) {
+        // Test 1 : word in dictionary ?
+        System.out.println(word + " is in the dictionary ? " + dictionary.isWord(word) + "\n");
 
-        // Test 2 : word not in dictionary
-        System.out.println(wrongWord + " is in the dictionary ? " + dictionary.isWord(wrongWord) + "\n");
+        // Test 2 : 5 closest words
 
-        // Test 3 : 5 closest words of Alexndrie
-
-        ArrayList<WordWithValue> words = dictionary.similarWords(wrongWord);
-        String[] closest5Words = Levenshtein.closest5Words(words, wrongWord);
+        ArrayList<WordWithValue> words = dictionary.similarWords(word);
+        String[] closest5Words = Levenshtein.closest5Words(words, word);
         int index = 1;
         System.out.println("Closest 5 words in terms of Levenshtein distance : ");
-        for(String word : closest5Words) {
-            System.out.println(index + ". " + word);
+        for(String closestWord : closest5Words) {
+            System.out.println(index + ". " + closestWord);
             index++;
         }
         System.out.println();
 
-        // Test 4 : closest word of Alexndrie
+        // Test 3 : closest word
         System.out.println("Closest word in terms of Levenshtein distance : ");
-        System.out.println(Levenshtein.closestWord(words, wrongWord) + "\n");
+        System.out.println(Levenshtein.closestWord(words, word) + "\n");
     }
 
     public static void main(String[] args) {
@@ -58,8 +55,8 @@ public class Main {
 
         Dictionary dictionary = new Dictionary();
 
-        //test(dictionary, "Alexandrie", "Alexndrie");
-        test(dictionary, "abréviation", "abbréviation");
+        test(dictionary, "Alexndrie");
+        //test(dictionary, "abbréviation");
 
         //correctFile(dictionary, "fautes.txt");
 
