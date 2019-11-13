@@ -31,13 +31,13 @@ public class Main {
 
     public static void test(Dictionary dictionary, String correctWord, String wrongWord) {
         // Test 1 : word in dictionary
-        //System.out.println(correctWord + " is in the dictionary ? " + dictionary.isWord(correctWord) + "\n");
+        System.out.println(correctWord + " is in the dictionary ? " + dictionary.isWord(correctWord) + "\n");
 
         // Test 2 : word not in dictionary
-        //System.out.println(wrongWord + " is in the dictionary ? " + dictionary.isWord(wrongWord) + "\n");
+        System.out.println(wrongWord + " is in the dictionary ? " + dictionary.isWord(wrongWord) + "\n");
 
         // Test 3 : 5 closest words of Alexndrie
-        /*
+
         ArrayList<WordWithValue> words = dictionary.similarWords(wrongWord);
         String[] closest5Words = Levenshtein.closest5Words(words, wrongWord);
         int index = 1;
@@ -47,7 +47,6 @@ public class Main {
             index++;
         }
         System.out.println();
-        */ArrayList<WordWithValue> words = dictionary.similarWords(wrongWord);
 
         // Test 4 : closest word of Alexndrie
         System.out.println("Closest word in terms of Levenshtein distance : ");
